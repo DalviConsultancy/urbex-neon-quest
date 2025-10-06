@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Users, Camera, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black relative">
+      <AnimatedBackground />
       <Navbar />
       
       {/* Hero Section */}

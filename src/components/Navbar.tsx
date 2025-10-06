@@ -1,22 +1,33 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Volume2, VolumeX } from "lucide-react";
+import { Menu, X, Volume2, VolumeX, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
-  const navLinks = [
+  const publicNavLinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Gallery", path: "/gallery" },
     { name: "Rules", path: "/rules" },
     { name: "Join Us", path: "/join" },
   ];
+
+  const memberNavLinks = [
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Maps", path: "/maps" },
+    { name: "Gallery", path: "/gallery" },
+    { name: "Feedback", path: "/feedback" },
+  ];
+
+  const navLinks = user ? memberNavLinks : publicNavLinks;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-primary/20">
@@ -56,11 +67,22 @@ const Navbar = () => {
             >
               {isMusicPlaying ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
             </Button>
-            <Link to="/auth">
-              <Button className="bg-primary hover:bg-primary/80 text-white glow-red">
-                Login
+            {user ? (
+              <Button 
+                onClick={() => signOut()}
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/10"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
               </Button>
-            </Link>
+            ) : (
+              <Link to="/auth">
+                <Button className="bg-primary hover:bg-primary/80 text-white glow-red">
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -98,11 +120,25 @@ const Navbar = () => {
               >
                 {isMusicPlaying ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
               </Button>
-              <Link to="/auth" onClick={() => setIsOpen(false)}>
-                <Button className="bg-primary hover:bg-primary/80 text-white glow-red">
-                  Login
+              {user ? (
+                <Button 
+                  onClick={() => {
+                    setIsOpen(false);
+                    signOut();
+                  }}
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary/10"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
                 </Button>
-              </Link>
+              ) : (
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button className="bg-primary hover:bg-primary/80 text-white glow-red">
+                    Login
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         )}

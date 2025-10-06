@@ -16,6 +16,7 @@ import Chatbot from "./pages/Chatbot";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -34,15 +35,15 @@ const App = () => (
           <Route path="/join" element={<Join />} />
           <Route path="/auth" element={<Auth />} />
           
-          {/* Member Routes - Protected in production */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/maps" element={<Maps />} />
-          <Route path="/feedback" element={<Feedback />} />
-          <Route path="/chatbot" element={<Chatbot />} />
-          <Route path="/premium" element={<Premium />} />
+          {/* Member Routes - Protected */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/maps" element={<ProtectedRoute><Maps /></ProtectedRoute>} />
+          <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
+          <Route path="/chatbot" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
+          <Route path="/premium" element={<ProtectedRoute><Premium /></ProtectedRoute>} />
           
-          {/* Manager-Only Route - Should be protected by auth */}
-          <Route path="/manager" element={<ManagerDashboard />} />
+          {/* Manager-Only Route - Protected */}
+          <Route path="/manager" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

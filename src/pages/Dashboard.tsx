@@ -1,18 +1,49 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AnimatedBackground from "@/components/AnimatedBackground";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, MessageSquare, FileText, TrendingUp } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
-  // Mock user data
-  const user = {
-    name: "Explorer",
-    level: "Novice Explorer",
-    locationsVisited: 3,
-    memberSince: "2024",
-  };
+  const { user: authUser } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!authUser) return;
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", authUser.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+      } else {
+        setProfile(data);
+      }
+      setLoading(false);
+    };
+
+    fetchProfile();
+  }, [authUser]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-primary text-xl animate-pulse">Loading...</div>
+      </div>
+    );
+  }
+
+  const displayName = profile?.full_name || authUser?.email?.split("@")[0] || "Explorer";
 
   const quickLinks = [
     {
@@ -39,15 +70,16 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black relative">
+      <AnimatedBackground />
       <Navbar />
       
-      <main className="pt-24 pb-12">
+      <main className="pt-24 pb-12 relative z-10">
         <div className="container mx-auto px-4">
           {/* Welcome Section */}
           <div className="mb-12 animate-fade-slide-up">
             <h1 className="text-4xl md:text-5xl font-bold text-primary text-glow-red mb-4">
-              Welcome back, {user.name}!
+              Welcome back, {displayName}!
             </h1>
             <p className="text-xl text-muted-foreground">
               Ready for your next exploration?
@@ -61,7 +93,7 @@ const Dashboard = () => {
                 <h3 className="text-lg font-semibold text-secondary">Level</h3>
                 <TrendingUp className="h-6 w-6 text-primary glow-red" />
               </div>
-              <p className="text-3xl font-bold text-primary">{user.level}</p>
+              <p className="text-3xl font-bold text-primary">{profile?.level || "Novice Explorer"}</p>
             </Card>
 
             <Card className="bg-card border-primary/20 p-6 hover-scale transition-all">
@@ -69,7 +101,7 @@ const Dashboard = () => {
                 <h3 className="text-lg font-semibold text-secondary">Locations Visited</h3>
                 <MapPin className="h-6 w-6 text-primary glow-red" />
               </div>
-              <p className="text-3xl font-bold text-primary">{user.locationsVisited}</p>
+              <p className="text-3xl font-bold text-primary">{profile?.locations_visited || 0}</p>
             </Card>
 
             <Card className="bg-card border-primary/20 p-6 hover-scale transition-all">
@@ -77,7 +109,9 @@ const Dashboard = () => {
                 <h3 className="text-lg font-semibold text-secondary">Member Since</h3>
                 <TrendingUp className="h-6 w-6 text-primary glow-red" />
               </div>
-              <p className="text-3xl font-bold text-primary">{user.memberSince}</p>
+              <p className="text-3xl font-bold text-primary">
+                {profile?.created_at ? new Date(profile.created_at).getFullYear() : new Date().getFullYear()}
+              </p>
             </Card>
           </div>
 
