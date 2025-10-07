@@ -21,8 +21,6 @@ interface LocationItem {
 const Gallery = () => {
   const [selectedLocation, setSelectedLocation] = useState<LocationItem | null>(null);
   const [apiKey] = useState<string>("AIzaSyCAaS7NtW5UOVshw8hMXI6Ut7kv_QEUAX8");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useState<HTMLAudioElement | null>(null)[0];
 
   // Detailed gallery items with real abandoned locations in India
   const galleryItems: LocationItem[] = [
@@ -176,31 +174,6 @@ const Gallery = () => {
               Each image tells a story of time, decay, and hidden history.
             </p>
           </div>
-
-          {/* Background Music Controls */}
-          <div className="mb-8 flex justify-center">
-            <Button
-              onClick={() => {
-                const audio = document.getElementById('bg-music') as HTMLAudioElement;
-                if (audio) {
-                  if (isPlaying) {
-                    audio.pause();
-                  } else {
-                    audio.play();
-                  }
-                  setIsPlaying(!isPlaying);
-                }
-              }}
-              variant="outline"
-              className="gap-2"
-            >
-              {isPlaying ? '🔇 Pause Music' : '🎵 Play Background Music'}
-            </Button>
-          </div>
-
-          <audio id="bg-music" loop>
-            <source src="/ambient-horror.mp3" type="audio/mpeg" />
-          </audio>
 
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -7,19 +8,38 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const Join = () => {
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password: "",
     experience: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Application submitted! We'll contact you soon.");
-    setFormData({ name: "", email: "", experience: "", message: "" });
+    setLoading(true);
+
+    try {
+      const { error } = await signUp(formData.email, formData.password, formData.name);
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Account created! Welcome to URBEX!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error("Failed to create account. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const benefits = [
@@ -78,10 +98,10 @@ const Join = () => {
               </Card>
             </div>
 
-            {/* Application Form */}
+            {/* Signup Form */}
             <div>
               <h2 className="text-3xl font-bold text-secondary text-glow-cyan mb-8">
-                Apply to Join
+                Create Your Account
               </h2>
               <Card className="bg-card border-primary/20 p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -113,6 +133,22 @@ const Join = () => {
                   </div>
 
                   <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                      Password *
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      minLength={6}
+                      className="bg-input border-primary/20 text-foreground"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Minimum 6 characters</p>
+                  </div>
+
+                  <div>
                     <label htmlFor="experience" className="block text-sm font-medium text-foreground mb-2">
                       Urban Exploration Experience
                     </label>
@@ -136,20 +172,22 @@ const Join = () => {
                       required
                       rows={5}
                       className="bg-input border-primary/20 text-foreground"
+                      placeholder="Tell us about your interest in urban exploration..."
                     />
                   </div>
 
                   <Button
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/80 text-white pulse-glow"
+                    disabled={loading}
                   >
-                    Submit Application
+                    {loading ? "Creating Account..." : "Create Account & Join"}
                   </Button>
                 </form>
               </Card>
 
               <p className="text-sm text-muted-foreground text-center mt-6">
-                Already a member?{" "}
+                Already have an account?{" "}
                 <a href="/auth" className="text-secondary hover:underline">
                   Sign in here
                 </a>
