@@ -20,7 +20,9 @@ interface LocationItem {
 
 const Gallery = () => {
   const [selectedLocation, setSelectedLocation] = useState<LocationItem | null>(null);
-  const [apiKey, setApiKey] = useState<string>("");
+  const [apiKey] = useState<string>("AIzaSyCAaS7NtW5UOVshw8hMXI6Ut7kv_QEUAX8");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useState<HTMLAudioElement | null>(null)[0];
 
   // Detailed gallery items with real abandoned locations in India
   const galleryItems: LocationItem[] = [
@@ -175,31 +177,30 @@ const Gallery = () => {
             </p>
           </div>
 
-          {/* API Key Input */}
-          {!apiKey && (
-            <div className="mb-8 p-6 bg-card border border-primary/20 rounded-lg">
-              <h3 className="text-lg font-semibold text-primary mb-2">Google Maps API Key Required</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                To view location maps, please enter your Google Maps API key. Get one from{" "}
-                <a 
-                  href="https://developers.google.com/maps/documentation/javascript/get-api-key" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-secondary hover:underline"
-                >
-                  Google Cloud Console
-                </a>
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Enter your Google Maps API key"
-                  className="flex-1 px-4 py-2 bg-background border border-primary/20 rounded-lg text-foreground"
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
+          {/* Background Music Controls */}
+          <div className="mb-8 flex justify-center">
+            <Button
+              onClick={() => {
+                const audio = document.getElementById('bg-music') as HTMLAudioElement;
+                if (audio) {
+                  if (isPlaying) {
+                    audio.pause();
+                  } else {
+                    audio.play();
+                  }
+                  setIsPlaying(!isPlaying);
+                }
+              }}
+              variant="outline"
+              className="gap-2"
+            >
+              {isPlaying ? '🔇 Pause Music' : '🎵 Play Background Music'}
+            </Button>
+          </div>
+
+          <audio id="bg-music" loop>
+            <source src="/ambient-horror.mp3" type="audio/mpeg" />
+          </audio>
 
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
