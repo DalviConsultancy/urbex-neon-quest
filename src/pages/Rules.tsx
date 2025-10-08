@@ -98,7 +98,7 @@ const Rules = () => {
                 className="bg-card border-primary/20 p-8 hover-scale transition-all hover:border-secondary"
               >
                 <div className="flex items-start space-x-4 mb-4">
-                  <rule.icon className="h-10 w-10 text-primary glow-red flex-shrink-0" />
+                  <rule.icon className="h-10 w-10 text-primary flex-shrink-0" />
                   <div>
                     <h3 className="text-2xl font-bold text-secondary mb-2">{rule.title}</h3>
                     <p className="text-muted-foreground mb-4">{rule.description}</p>

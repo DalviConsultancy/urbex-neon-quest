@@ -46,17 +46,17 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4 text-secondary">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
+                <a href="https://docs.google.com/document/d/1placeholder-privacy-policy/edit" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
+                <a href="https://docs.google.com/document/d/1placeholder-terms-of-service/edit" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
+                <a href="https://docs.google.com/document/d/1placeholder-disclaimer/edit" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-secondary transition-colors">
                   Disclaimer
                 </a>
               </li>
@@ -67,16 +67,16 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4 text-secondary">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors glow-red">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Instagram className="h-6 w-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors glow-red">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Twitter className="h-6 w-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors glow-red">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Youtube className="h-6 w-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors glow-red">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Mail className="h-6 w-6" />
               </a>
             </div>

@@ -79,7 +79,7 @@ const Home = () => {
                 key={index}
                 className="bg-card border border-primary/20 p-6 rounded-lg hover-scale hover:border-secondary transition-all"
               >
-                <feature.icon className="h-12 w-12 text-primary mb-4 glow-red" />
+                <feature.icon className="h-12 w-12 text-primary mb-4" />
                 <h3 className="text-xl font-semibold mb-2 text-secondary">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>
               </div>

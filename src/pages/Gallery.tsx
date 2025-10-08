@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { X, MapPin, Calendar, User } from "lucide-react";
+import { X, MapPin, Calendar, User, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface LocationItem {
@@ -21,6 +21,33 @@ interface LocationItem {
 const Gallery = () => {
   const [selectedLocation, setSelectedLocation] = useState<LocationItem | null>(null);
   const [apiKey] = useState<string>("AIzaSyCAaS7NtW5UOVshw8hMXI6Ut7kv_QEUAX8");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(err => {
+        console.error("Audio play failed:", err);
+      });
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleEnded = () => setIsPlaying(false);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
 
   // Detailed gallery items with real abandoned locations in India
   const galleryItems: LocationItem[] = [
@@ -161,6 +188,23 @@ const Gallery = () => {
   return (
     <div className="min-h-screen bg-black">
       <Navbar />
+      <audio ref={audioRef} loop>
+        <source src="/ambient-horror.mp3" type="audio/mpeg" />
+      </audio>
+
+      {/* Floating Audio Control */}
+      <Button
+        onClick={toggleAudio}
+        size="icon"
+        className="fixed bottom-6 right-6 z-40 bg-primary hover:bg-primary/80 w-14 h-14 rounded-full shadow-lg"
+        aria-label={isPlaying ? "Pause ambient sound" : "Play ambient sound"}
+      >
+        {isPlaying ? (
+          <VolumeX className="h-6 w-6" />
+        ) : (
+          <Volume2 className="h-6 w-6" />
+        )}
+      </Button>
       
       <main className="pt-24 pb-12">
         <div className="container mx-auto px-4">

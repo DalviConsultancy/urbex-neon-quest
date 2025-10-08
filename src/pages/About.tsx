@@ -68,7 +68,7 @@ const About = () => {
               Our Story
             </h2>
             <div className="max-w-4xl mx-auto">
-              <Card className="bg-card border-primary/20 p-8">
+              <Card className="bg-card border-primary/20 p-8 hover-scale transition-all hover:border-secondary">
                 <p className="text-lg text-muted-foreground leading-relaxed mb-4">
                   URBEX began in 2020 when four friends discovered an abandoned textile mill in Mumbai. 
                   What started as a casual exploration transformed into a passion for documenting India's 
