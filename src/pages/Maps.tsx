@@ -29,6 +29,7 @@ const Maps = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [visitedLocations, setVisitedLocations] = useState<string[]>([]);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [apiKey] = useState<string>("AIzaSyCAaS7NtW5UOVshw8hMXI6Ut7kv_QEUAX8");
 
   // Comprehensive location data with coordinates
@@ -271,7 +272,10 @@ const Maps = () => {
           <Card className="bg-card border-primary/20 overflow-hidden mb-12">
             <div className="h-[500px]">
               {apiKey ? (
-                <LoadScript googleMapsApiKey={apiKey}>
+                <LoadScript 
+                  googleMapsApiKey={apiKey}
+                  onLoad={() => setIsMapLoaded(true)}
+                >
                   <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '100%' }}
                     center={{ lat: 22.9074872, lng: 79.0855928 }}
@@ -284,7 +288,7 @@ const Maps = () => {
                       ]
                     }}
                   >
-                    {filteredLocations.map((location) => (
+                    {isMapLoaded && filteredLocations.map((location) => (
                       <Marker
                         key={location.id}
                         position={location.coordinates}
@@ -432,24 +436,22 @@ const Maps = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-primary mb-3">Location on Map</h3>
                     <div className="rounded-lg overflow-hidden border border-primary/20 h-[300px]">
-                      {apiKey ? (
-                        <LoadScript googleMapsApiKey={apiKey}>
-                          <GoogleMap
-                            mapContainerStyle={{ width: '100%', height: '100%' }}
-                            center={selectedLocation.coordinates}
-                            zoom={13}
-                            options={{
-                              styles: [
-                                { elementType: "geometry", stylers: [{ color: "#1a1a1a" }] },
-                                { elementType: "labels.text.stroke", stylers: [{ color: "#1a1a1a" }] },
-                                { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                              ]
-                            }}
-                          >
-                            <Marker position={selectedLocation.coordinates} />
-                          </GoogleMap>
-                        </LoadScript>
-                      ) : null}
+                      {isMapLoaded && (
+                        <GoogleMap
+                          mapContainerStyle={{ width: '100%', height: '100%' }}
+                          center={selectedLocation.coordinates}
+                          zoom={13}
+                          options={{
+                            styles: [
+                              { elementType: "geometry", stylers: [{ color: "#1a1a1a" }] },
+                              { elementType: "labels.text.stroke", stylers: [{ color: "#1a1a1a" }] },
+                              { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                            ]
+                          }}
+                        >
+                          <Marker position={selectedLocation.coordinates} />
+                        </GoogleMap>
+                      )}
                     </div>
                   </div>
 
