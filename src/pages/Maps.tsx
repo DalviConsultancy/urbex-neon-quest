@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, CheckCircle, X } from "lucide-react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { MapPin, Search, CheckCircle, X, Star } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Location {
   id: string;
@@ -31,6 +31,65 @@ const Maps = () => {
   const [visitedLocations, setVisitedLocations] = useState<string[]>([]);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [apiKey] = useState<string>("AIzaSyCAaS7NtW5UOVshw8hMXI6Ut7kv_QEUAX8");
+  const [favoriteLocations, setFavoriteLocations] = useState<string[]>([]);
+
+  // Fetch user's favorite locations
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchFavorites = async () => {
+      const { data, error } = await supabase
+        .from('favorite_locations')
+        .select('location_id')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error fetching favorites:', error);
+        return;
+      }
+
+      setFavoriteLocations(data.map(fav => fav.location_id));
+    };
+
+    fetchFavorites();
+  }, [user]);
+
+  const toggleFavorite = async (locationId: string) => {
+    if (!user) {
+      toast.error("Please sign in to save favorites");
+      return;
+    }
+
+    const isFavorite = favoriteLocations.includes(locationId);
+
+    if (isFavorite) {
+      const { error } = await supabase
+        .from('favorite_locations')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('location_id', locationId);
+
+      if (error) {
+        toast.error("Failed to remove favorite");
+        return;
+      }
+
+      setFavoriteLocations(favoriteLocations.filter(id => id !== locationId));
+      toast.success("Removed from favorites");
+    } else {
+      const { error } = await supabase
+        .from('favorite_locations')
+        .insert({ user_id: user.id, location_id: locationId });
+
+      if (error) {
+        toast.error("Failed to add favorite");
+        return;
+      }
+
+      setFavoriteLocations([...favoriteLocations, locationId]);
+      toast.success("Added to favorites");
+    }
+  };
 
   // Comprehensive location data with coordinates
   const locations: Location[] = [
@@ -293,14 +352,6 @@ const Maps = () => {
                         key={location.id}
                         position={location.coordinates}
                         onClick={() => setSelectedLocation(location)}
-                        icon={{
-                          path: window.google.maps.SymbolPath.CIRCLE,
-                          scale: 8,
-                          fillColor: location.isVisited ? "#10b981" : "#ef4444",
-                          fillOpacity: 1,
-                          strokeColor: "#ffffff",
-                          strokeWeight: 2
-                        }}
                       />
                     ))}
                   </GoogleMap>
@@ -434,7 +485,19 @@ const Maps = () => {
 
                   {/* Mini Map */}
                   <div>
-                    <h3 className="text-lg font-semibold text-primary mb-3">Location on Map</h3>
+                    <h3 className="text-lg font-semibold text-primary mb-3 flex items-center justify-between">
+                      Location on Map
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => toggleFavorite(selectedLocation.id)}
+                        className="hover:bg-primary/10"
+                      >
+                        <Star 
+                          className={`h-5 w-5 ${favoriteLocations.includes(selectedLocation.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
+                        />
+                      </Button>
+                    </h3>
                     <div className="rounded-lg overflow-hidden border border-primary/20 h-[300px]">
                       {isMapLoaded && (
                         <GoogleMap

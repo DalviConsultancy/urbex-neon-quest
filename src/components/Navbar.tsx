@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Volume2, VolumeX, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,29 @@ const Navbar = () => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio('/ambient-horror.mp3');
+    audioRef.current.loop = true;
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(err => console.error("Audio play failed:", err));
+    }
+    setIsMusicPlaying(!isMusicPlaying);
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -62,7 +85,7 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsMusicPlaying(!isMusicPlaying)}
+              onClick={toggleMusic}
               className="text-foreground hover:text-secondary"
             >
               {isMusicPlaying ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
@@ -115,7 +138,7 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsMusicPlaying(!isMusicPlaying)}
+                onClick={toggleMusic}
                 className="text-foreground hover:text-secondary"
               >
                 {isMusicPlaying ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}

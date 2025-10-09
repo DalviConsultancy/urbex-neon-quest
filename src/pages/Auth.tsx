@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import AnimatedBackground from "@/components/AnimatedBackground";
@@ -15,7 +14,7 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, signIn, signUp, signInWithGoogle } = useAuth();
+  const { user, signIn, signUp } = useAuth();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -58,15 +57,6 @@ const Auth = () => {
     }
   };
 
-  const handleGoogleAuth = async () => {
-    setIsLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      toast.error(error.message);
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 relative">
       <AnimatedBackground />
@@ -80,25 +70,6 @@ const Auth = () => {
           <p className="text-muted-foreground">
             {isLogin ? "Welcome back, explorer" : "Begin your journey"}
           </p>
-        </div>
-
-        {/* Google Sign In */}
-        <Button
-          onClick={handleGoogleAuth}
-          variant="outline"
-          className="w-full mb-6 border-secondary text-secondary hover:bg-secondary/10"
-        >
-          <Mail className="mr-2 h-5 w-5" />
-          Continue with Gmail
-        </Button>
-
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-primary/20" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or</span>
-          </div>
         </div>
 
         {/* Email/Password Form */}
