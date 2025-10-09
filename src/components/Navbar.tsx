@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -50,6 +50,11 @@ const Navbar = () => {
   ];
 
   const navLinks = user ? memberNavLinks : publicNavLinks;
+
+  // Debug logging
+  console.log('Navbar - User:', user);
+  console.log('Navbar - Loading:', loading);
+  console.log('Navbar - NavLinks:', navLinks);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-primary/20">
