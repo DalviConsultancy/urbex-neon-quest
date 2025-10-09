@@ -46,7 +46,6 @@ const Navbar = () => {
   const memberNavLinks = [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Maps", path: "/maps" },
-    { name: "Gallery", path: "/gallery" },
     { name: "Feedback", path: "/feedback" },
   ];
 
