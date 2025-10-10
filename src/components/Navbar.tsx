@@ -46,10 +46,16 @@ const Navbar = () => {
   const memberNavLinks = [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Maps", path: "/maps" },
-    { name: "Feedback", path: "/feedback" },
   ];
 
-  const navLinks = user ? memberNavLinks : publicNavLinks;
+  const navLinks = user
+    ? [
+        ...publicNavLinks.map((link) =>
+          link.name === "Join Us" ? { name: "Feedback", path: "/feedback" } : link
+        ),
+        ...memberNavLinks,
+      ]
+    : publicNavLinks;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-primary/20">
